@@ -123,4 +123,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'file_upload_max_size' => env('FILE_UPLOAD_MAX_SIZE', 50000), // 50MB por defecto
+'audio_max_duration' => env('AUDIO_MAX_DURATION', 1800), // 30 minutos por defecto
+
 ];

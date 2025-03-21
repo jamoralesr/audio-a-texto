@@ -47,6 +47,20 @@ return [
             'report' => false,
         ],
 
+        'audio' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/audio'),
+            'url' => env('APP_URL').'/storage/audio',
+            'visibility' => 'public',
+        ],
+    
+        'transcriptions' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/transcriptions'),
+            'url' => env('APP_URL').'/storage/transcriptions',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
