@@ -1,66 +1,142 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Proyecto de Grabación y Transcripción de Audio con Laravel + Filament
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descripción General
 
-## About Laravel
+Esta aplicación permite a los usuarios grabar reuniones en audio desde sus dispositivos móviles, almacenarlas en sus cuentas personales, transcribirlas automáticamente usando servicios de IA, y recibir estas transcripciones por email en formato Markdown. La plataforma está construida con Laravel como backend y Filament como framework de administración, proporcionando una interfaz intuitiva tanto para usuarios como para administradores.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Modelos del Sistema
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. User (Usuario)
+**Funcionalidad**: Gestiona la autenticación y datos de usuarios.
+**Campos principales**: 
+- Datos personales (nombre, email, contraseña)
+- Configuraciones de cuenta
+- Relaciones con grabaciones
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Lógica**:
+- Maneja procesos de registro y autenticación
+- Gestiona permisos y roles (usando Spatie Permission o similar)
+- Almacena preferencias de notificación
 
-## Learning Laravel
+### 2. Recording (Grabación)
+**Funcionalidad**: Almacena y gestiona las grabaciones de audio.
+**Campos principales**:
+- user_id: Relación con el usuario propietario
+- title: Título de la grabación
+- description: Descripción opcional
+- file_path: Ruta al archivo de audio
+- file_name: Nombre del archivo
+- mime_type: Tipo MIME del archivo
+- file_size: Tamaño en bytes
+- duration: Duración en segundos
+- status: Estado actual (pending, processing, completed, failed)
+- metadata: Datos adicionales en formato JSON
+- is_public: Indica si la grabación es accesible públicamente
+- processed_at: Cuándo se procesó completamente
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Lógica**:
+- Gestiona el ciclo de vida completo de una grabación
+- Controla los procesos de subida y almacenamiento
+- Proporciona métodos para acceder a metadatos y estado
+- Implementa políticas de acceso y privacidad
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 3. Transcription (Transcripción)
+**Funcionalidad**: Almacena y gestiona las transcripciones de las grabaciones.
+**Campos principales**:
+- recording_id: Relación con la grabación
+- content: Contenido de la transcripción en Markdown
+- language: Idioma de la transcripción
+- service_used: Servicio de IA utilizado
+- service_response: Respuesta completa del servicio de IA
+- confidence_score: Puntuación de confianza de la transcripción
+- is_edited: Indica si ha sido editada manualmente
+- email_sent: Indica si se ha enviado el email
+- email_sent_at: Cuándo se envió el email
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Lógica**:
+- Vincula transcripciones con grabaciones
+- Gestiona el formato y presentación del texto
+- Facilita búsquedas y filtrado de contenido
+- Controla el proceso de notificación por email
 
-## Laravel Sponsors
+### 4. Tag (Etiqueta) - Opcional
+**Funcionalidad**: Permite categorizar grabaciones.
+**Campos principales**:
+- name: Nombre de la etiqueta
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Lógica**:
+- Facilita organización y búsqueda de grabaciones
+- Permite agrupar grabaciones por temas o proyectos
 
-### Premium Partners
+### 5. RecordingShare (Compartir Grabación) - Opcional
+**Funcionalidad**: Gestiona el acceso compartido a grabaciones.
+**Campos principales**:
+- recording_id: Relación con la grabación
+- user_id: Usuario con quien se comparte
+- permission_level: Nivel de permiso otorgado
+- token: Token único para acceso por enlace
+- expires_at: Fecha de expiración
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+**Lógica**:
+- Controla los permisos de acceso compartido
+- Gestiona enlaces temporales
+- Implementa límites de tiempo y permisos
 
-## Contributing
+## Flujo de Funcionamiento
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Grabación de Audio**:
+   - El usuario inicia sesión y accede a la interfaz de grabación
+   - La aplicación solicita permisos de micrófono
+   - El audio se graba en tiempo real y se almacena temporalmente
+   - Al finalizar, el archivo se sube al servidor y se crea un registro en la tabla `recordings`
+   - El estado inicial es "pending"
 
-## Code of Conduct
+2. **Procesamiento de Audio**:
+   - Un job en segundo plano toma las grabaciones pendientes
+   - Procesa el archivo (normalización, compresión si es necesario)
+   - Actualiza metadatos como duración y tamaño
+   - Cambia el estado a "processing"
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. **Transcripción**:
+   - El archivo procesado se envía a un servicio de IA (OpenAI, Google, etc.)
+   - La respuesta del servicio se recibe y se formatea a Markdown
+   - Se crea un registro en la tabla `transcriptions`
+   - Se vincula con la grabación correspondiente
+   - El estado de la grabación cambia a "completed"
 
-## Security Vulnerabilities
+4. **Notificación**:
+   - Se genera un email con la transcripción formateada
+   - Se envía al usuario mediante el sistema de emails de Laravel
+   - Se registra el envío en la tabla `transcriptions`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. **Gestión y Acceso**:
+   - El usuario puede acceder a sus grabaciones y transcripciones
+   - Puede buscar, filtrar y organizar su biblioteca
+   - Opciones para editar transcripciones manualmente
+   - Puede compartir grabaciones con otros usuarios si el módulo está habilitado
 
-## License
+## Características Técnicas
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **Sistema de Colas**:
+   - Utiliza Laravel Queues para procesar tareas asíncronas
+   - Maneja reintentos y errores automáticamente
+
+2. **Almacenamiento**:
+   - Configuración de discos específicos para audio y transcripciones
+   - Políticas de retención y limpieza
+
+3. **Seguridad**:
+   - Autenticación robusta con Laravel Fortify o similar
+   - Autorización basada en políticas
+   - Protección contra ataques comunes
+
+4. **Panel de Administración**:
+   - Interface completa con Filament para administradores
+   - Gestión de usuarios, grabaciones y transcripciones
+   - Estadísticas y reportes
+
+5. **API**:
+   - Endpoints para integración con otras aplicaciones
+   - Autenticación mediante tokens o OAuth
+
+Este diseño proporciona una base sólida para construir una aplicación completa de grabación y transcripción de audio, con un enfoque modular que permite expandir funcionalidades según sea necesario.
