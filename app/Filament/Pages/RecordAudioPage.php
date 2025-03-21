@@ -141,10 +141,13 @@ class RecordAudioPage extends Page implements HasForms
                 'is_public' => $data['is_public'] ?? false,
             ]);
 
+            // Enviar a la cola para procesamiento de transcripción
+            \App\Jobs\ProcessAudioTranscription::dispatch($recording);
+
             // Mostrar notificación de éxito
             $this->dispatch('show-success-notification', [
                 'title' => 'Grabación guardada',
-                'message' => 'La grabación se ha guardado correctamente',
+                'message' => 'La grabación se ha guardado correctamente y se está procesando la transcripción',
             ]);
 
             // Reiniciar el formulario y el estado de grabación

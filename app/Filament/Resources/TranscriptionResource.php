@@ -247,6 +247,7 @@ class TranscriptionResource extends Resource
         return [
             'index' => Pages\ListTranscriptions::route('/'),
             'create' => Pages\CreateTranscription::route('/create'),
+            'view' => Pages\ViewTranscription::route('/{record}'),
             'edit' => Pages\EditTranscription::route('/{record}/edit'),
         ];
     }
