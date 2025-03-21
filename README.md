@@ -105,9 +105,10 @@ Esta aplicación permite a los usuarios grabar reuniones en audio desde sus disp
    - El estado de la grabación cambia a "completed"
 
 4. **Notificación**:
-   - Se genera un email con la transcripción formateada
-   - Se envía al usuario mediante el sistema de emails de Laravel
-   - Se registra el envío en la tabla `transcriptions`
+   - Se genera un email con la transcripción formateada usando plantillas Blade
+   - Se envía al usuario mediante Resend API a través del sistema de emails de Laravel
+   - El envío se procesa de forma asíncrona mediante colas
+   - Se registra el envío en la tabla `transcriptions` con fecha y hora
 
 5. **Gestión y Acceso**:
    - El usuario puede acceder a sus grabaciones y transcripciones
@@ -119,7 +120,9 @@ Esta aplicación permite a los usuarios grabar reuniones en audio desde sus disp
 
 1. **Sistema de Colas**:
    - Utiliza Laravel Queues para procesar tareas asíncronas
-   - Maneja reintentos y errores automáticamente
+   - Implementa jobs para transcripción y envío de emails
+   - Configuración de reintentos, backoff y manejo de errores
+   - Monitoreo de estado de los jobs
 
 2. **Almacenamiento**:
    - Configuración de discos específicos para audio y transcripciones
