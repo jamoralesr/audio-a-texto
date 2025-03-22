@@ -9,6 +9,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -107,7 +108,16 @@ class RecordAudioPage extends Page implements HasForms
         $this->audioFile = $filePath;
         $this->audioUrl = asset('storage/' . $filePath);
 
-        // Notificar al usuario
+        // Notificar al usuario usando el sistema nativo de Filament
+        Notification::make()
+            ->title('Audio procesado')
+            ->body('El audio ha sido procesado correctamente y está listo para guardar')
+            ->info()
+            ->color('primary')
+            ->duration(8000) // 8 segundos
+            ->send();
+            
+        // Mantener el evento para compatibilidad con el frontend
         $this->dispatch('audio-processed');
     }
 
@@ -144,11 +154,14 @@ class RecordAudioPage extends Page implements HasForms
             // Enviar a la cola para procesamiento de transcripción
             \App\Jobs\ProcessAudioTranscription::dispatch($recording);
 
-            // Mostrar notificación de éxito
-            $this->dispatch('show-success-notification', [
-                'title' => 'Grabación guardada',
-                'message' => 'La grabación se ha guardado correctamente y se está procesando la transcripción',
-            ]);
+            // Mostrar notificación de éxito usando el sistema nativo de Filament
+            Notification::make()
+                ->title('Grabación guardada')
+                ->body('La grabación se ha guardado correctamente y se está procesando la transcripción')
+                ->success()
+                ->color('success')
+                ->duration(10000) // 10 segundos
+                ->send();
 
             // Reiniciar el formulario y el estado de grabación
             $this->form->fill();
@@ -157,7 +170,15 @@ class RecordAudioPage extends Page implements HasForms
         } catch (Halt $exception) {
             // Falló la validación del formulario
         } catch (\Exception $e) {
-            // Error al guardar la grabación
+            // Error al guardar la grabación - usar notificación de Filament
+            Notification::make()
+                ->title('Error al guardar la grabación')
+                ->body($e->getMessage())
+                ->danger()
+                ->color('danger')
+                ->duration(15000) // 15 segundos para errores
+                ->send();
+                
             $this->addError('general', 'Error al guardar la grabación: ' . $e->getMessage());
         }
     }
