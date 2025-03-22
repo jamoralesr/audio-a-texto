@@ -14,9 +14,10 @@
                 </div>
                 
                 <!-- Recording Controls -->
-                <div class="flex justify-center space-x-4">
+                <div class="flex justify-center gap-3">
                     <x-filament::button
                         color="danger"
+                        size="xl"
                         icon="heroicon-o-microphone"
                         x-on:click="toggleRecording"
                         x-text="isRecording ? 'Grabando...' : 'Grabar'"
@@ -27,6 +28,7 @@
                     
                     <x-filament::button
                         color="warning"
+                        size="xl"
                         icon="heroicon-o-pause"
                         x-on:click="togglePause"
                         x-text="isPaused ? 'Continuar' : 'Pausar'"
@@ -37,6 +39,7 @@
                     
                     <x-filament::button
                         color="gray"
+                        size="xl"
                         icon="heroicon-o-stop"
                         x-on:click="stopRecording"
                         x-bind:disabled="!isRecording"
@@ -59,7 +62,7 @@
             <form wire:submit="saveRecording">
                 {{ $this->form }}
                 
-                <div class="flex justify-end mt-4 space-x-2">
+                <div class="flex justify-end mt-4 gap-3">
                     <x-filament::button
                         type="button"
                         color="gray"
