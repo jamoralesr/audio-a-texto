@@ -56,7 +56,7 @@ class RecordingResource extends Resource
                             ->disk('public')
                             ->directory('recordings')
                             ->acceptedFileTypes(['audio/mpeg', 'audio/wav', 'audio/mp3', 'audio/ogg'])
-                            ->maxSize(50 * 1024)
+                            ->maxSize(config('app.file_upload_max_size'))
                             ->downloadable()
                             ->openable()
                             ->required()
