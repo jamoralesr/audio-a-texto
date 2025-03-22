@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Facades\Filament;
 
 class TranscriptionResource extends Resource
 {
@@ -26,6 +27,23 @@ class TranscriptionResource extends Resource
     protected static ?string $modelLabel = 'Transcripción';
     
     protected static ?string $pluralModelLabel = 'Transcripciones';
+    
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        
+        // Get the current authenticated user
+        $user = Filament::auth()->user();
+        
+        // If the user is not a super admin (ID 1), only show transcriptions of their own recordings
+        if ($user->id !== 1) {
+            $query->whereHas('recording', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
+        }
+        
+        return $query;
+    }
 
     public static function form(Form $form): Form
     {
@@ -35,7 +53,17 @@ class TranscriptionResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('recording_id')
                             ->label('Grabación')
-                            ->relationship('recording', 'title')
+                            ->relationship('recording', 'title', function (Builder $query) {
+                                // Get the current authenticated user
+                                $user = Filament::auth()->user();
+                                
+                                // If the user is not a super admin (ID 1), only show their own recordings
+                                if ($user->id !== 1) {
+                                    $query->where('user_id', $user->id);
+                                }
+                                
+                                return $query;
+                            })
                             ->searchable()
                             ->preload()
                             ->required()

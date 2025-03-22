@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Facades\Filament;
 
 class RecordingResource extends Resource
 {
@@ -26,6 +27,22 @@ class RecordingResource extends Resource
     protected static ?string $modelLabel = 'Grabación';
     
     protected static ?string $pluralModelLabel = 'Grabaciones';
+    
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        
+        // Get the current authenticated user
+        $user = Filament::auth()->user();
+        
+        // If the user is not a super admin (ID 1), only show their own recordings
+        // This is a simple approach that ensures users can only see their own content
+        if ($user->id !== 1) {
+            $query->where('user_id', $user->id);
+        }
+        
+        return $query;
+    }
 
     public static function form(Form $form): Form
     {
@@ -38,7 +55,10 @@ class RecordingResource extends Resource
                             ->relationship('user', 'name')
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->default(fn () => Filament::auth()->user()->id)
+                            ->disabled(fn () => Filament::auth()->user()->id !== 1)
+                            ->visible(fn () => Filament::auth()->user()->id === 1),
                         Forms\Components\TextInput::make('title')
                             ->label('Título')
                             ->required()
