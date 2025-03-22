@@ -114,7 +114,7 @@ class RecordAudioPage extends Page implements HasForms
             ->body('El audio ha sido procesado correctamente y está listo para guardar')
             ->info()
             ->color('primary')
-            ->duration(8000) // 8 segundos
+            ->duration(6000) // 6 segundos
             ->send();
             
         // Mantener el evento para compatibilidad con el frontend
@@ -160,7 +160,7 @@ class RecordAudioPage extends Page implements HasForms
                 ->body('La grabación se ha guardado correctamente y se está procesando la transcripción')
                 ->success()
                 ->color('success')
-                ->duration(10000) // 10 segundos
+                ->duration(8000) // 8 segundos
                 ->send();
 
             // Reiniciar el formulario y el estado de grabación
