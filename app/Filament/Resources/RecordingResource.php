@@ -81,6 +81,9 @@ class RecordingResource extends Resource
                             ->openable()
                             ->required()
                             ->hiddenOn('edit'),
+                        Forms\Components\View::make('filament.resources.recording.audio-player')
+                            ->label('Reproductor de Audio')
+                            ->visibleOn('edit'),
                         Forms\Components\TextInput::make('file_name')
                             ->label('Nombre del Archivo')
                             ->disabled()
@@ -96,12 +99,14 @@ class RecordingResource extends Resource
                             ->numeric()
                             ->disabled()
                             ->dehydrated(false)
+                            //->formatStateUsing(fn (int $state): string => number_format($state / 1024 / 1024, 2) . ' MB')
                             ->visibleOn('edit'),
                         Forms\Components\TextInput::make('duration')
                             ->label('Duración (segundos)')
                             ->numeric()
                             ->disabled()
                             ->dehydrated(false)
+                            //->formatStateUsing(fn (int $state): string => gmdate('H:i:s', $state))
                             ->visibleOn('edit'),
                     ])->columns(2),
                     
