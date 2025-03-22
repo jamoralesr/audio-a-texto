@@ -166,13 +166,9 @@ class TranscriptionResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->limit(30),
-                Tables\Columns\TextColumn::make('content')
-                    ->label('Contenido')
-                    ->html()
-                    ->limit(50)
-                    ->searchable(),
-                Tables\Columns\BadgeColumn::make('language')
+                Tables\Columns\TextColumn::make('language')
                     ->label('Idioma')
+                    ->badge()
                     ->colors([
                         'primary' => 'es',
                         'success' => 'en',
@@ -187,8 +183,9 @@ class TranscriptionResource extends Resource
                         'pt' => 'Portugués',
                         default => $state,
                     }),
-                Tables\Columns\BadgeColumn::make('service_used')
+                Tables\Columns\TextColumn::make('service_used')
                     ->label('Servicio')
+                    ->badge()
                     ->colors([
                         'primary' => 'google',
                         'success' => 'azure',

@@ -19,7 +19,7 @@ class RecordAudioPage extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-microphone';
+    protected static ?string $navigationIcon = 'heroicon-s-microphone';
 
     protected static string $view = 'filament.pages.record-audio-page';
 
