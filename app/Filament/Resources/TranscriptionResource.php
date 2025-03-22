@@ -156,6 +156,11 @@ class TranscriptionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('recording.user.name')
+                    ->label('Usuario')
+                    ->searchable()
+                    ->sortable()
+                    ->visible(fn () => Filament::auth()->user()->id === 1),
                 Tables\Columns\TextColumn::make('recording.title')
                     ->label('Grabación')
                     ->searchable()

@@ -140,16 +140,13 @@ class RecordingResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn () => Filament::auth()->user()->id === 1),
                 Tables\Columns\TextColumn::make('title')
                     ->label('Título')
                     ->searchable()
                     ->sortable()
                     ->limit(30),
-                Tables\Columns\TextColumn::make('file_name')
-                    ->label('Archivo')
-                    ->searchable()
-                    ->toggleable(),
                 Tables\Columns\TextColumn::make('duration')
                     ->label('Duración')
                     ->formatStateUsing(fn (int $state): string => gmdate('H:i:s', $state))
@@ -159,8 +156,9 @@ class RecordingResource extends Resource
                     ->formatStateUsing(fn (int $state): string => number_format($state / 1024 / 1024, 2) . ' MB')
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\BadgeColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
+                    ->badge()
                     ->colors([
                         'danger' => 'failed',
                         'warning' => 'pending',
