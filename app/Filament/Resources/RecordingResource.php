@@ -20,8 +20,6 @@ class RecordingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-microphone';
     
-    protected static ?string $navigationGroup = 'Contenido';
-    
     protected static ?int $navigationSort = 1;
     
     protected static ?string $modelLabel = 'Grabación';

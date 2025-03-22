@@ -20,8 +20,6 @@ class TranscriptionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     
-    protected static ?string $navigationGroup = 'Contenido';
-    
     protected static ?int $navigationSort = 2;
     
     protected static ?string $modelLabel = 'Transcripción';
