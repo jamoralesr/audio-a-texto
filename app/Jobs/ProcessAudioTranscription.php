@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Jobs\SendTranscriptionEmail;
+// use App\Jobs\SendTranscriptionEmail;
 use App\Models\Recording;
 use App\Services\TranscriptionService;
 use Illuminate\Bus\Queueable;
@@ -70,8 +70,8 @@ class ProcessAudioTranscription implements ShouldQueue
                 'transcription_id' => $transcription->id,
             ]);
             
-            // Enviar email con la transcripción
-            SendTranscriptionEmail::dispatch($transcription);
+            // El procesamiento y envío de email se maneja ahora a través de ProcessTranscriptionToRecord
+            // que se activa automáticamente cuando se crea una transcripción
         } else {
             Log::error('Transcription failed', ['recording_id' => $this->recording->id]);
         }

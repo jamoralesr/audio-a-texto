@@ -1,8 +1,8 @@
-# Proyecto de Grabación y Transcripción de Audio con Laravel + Filament
+# Proyecto de Grabación, Transcripción y Generación de Actas con Laravel + Filament
 
 ## Descripción General
 
-Esta aplicación permite a los usuarios grabar reuniones en audio desde sus dispositivos móviles, almacenarlas en sus cuentas personales, transcribirlas automáticamente usando servicios de IA, y recibir estas transcripciones por email en formato Markdown. La plataforma está construida con Laravel como backend y Filament como framework de administración, proporcionando una interfaz intuitiva tanto para usuarios como para administradores.
+Esta aplicación permite a los usuarios grabar reuniones en audio desde sus dispositivos móviles, almacenarlas en sus cuentas personales, transcribirlas automáticamente usando servicios de IA, procesar estas transcripciones para generar actas formales, y recibir estas actas por email en formato Markdown. La plataforma está construida con Laravel como backend y Filament como framework de administración, proporcionando una interfaz intuitiva tanto para usuarios como para administradores.
 
 ## Modelos del Sistema
 
@@ -50,16 +50,32 @@ Esta aplicación permite a los usuarios grabar reuniones en audio desde sus disp
 - service_response: Respuesta completa del servicio de IA
 - confidence_score: Puntuación de confianza de la transcripción
 - is_edited: Indica si ha sido editada manualmente
-- email_sent: Indica si se ha enviado el email
-- email_sent_at: Cuándo se envió el email
 
 **Lógica**:
 - Vincula transcripciones con grabaciones
 - Gestiona el formato y presentación del texto
 - Facilita búsquedas y filtrado de contenido
+- Sirve como base para la generación de actas
+
+### 4. Record (Acta)
+**Funcionalidad**: Almacena y gestiona las actas generadas a partir de las transcripciones.
+**Campos principales**:
+- transcription_id: Relación con la transcripción
+- content: Contenido del acta en formato Markdown
+- language: Idioma del acta
+- service_used: Servicio de IA utilizado para procesar el acta
+- service_response: Respuesta completa del servicio de IA
+- is_edited: Indica si ha sido editada manualmente
+- email_sent: Indica si se ha enviado el email
+- email_sent_at: Cuándo se envió el email
+
+**Lógica**:
+- Vincula actas con transcripciones
+- Procesa el contenido de las transcripciones con IA para generar actas formales
+- Gestiona el formato y presentación del texto
 - Controla el proceso de notificación por email
 
-### 4. Tag (Etiqueta) - Opcional
+### 5. Tag (Etiqueta) - Opcional
 **Funcionalidad**: Permite categorizar grabaciones.
 **Campos principales**:
 - name: Nombre de la etiqueta
@@ -68,7 +84,7 @@ Esta aplicación permite a los usuarios grabar reuniones en audio desde sus disp
 - Facilita organización y búsqueda de grabaciones
 - Permite agrupar grabaciones por temas o proyectos
 
-### 5. RecordingShare (Compartir Grabación) - Opcional
+### 6. RecordingShare (Compartir Grabación) - Opcional
 **Funcionalidad**: Gestiona el acceso compartido a grabaciones.
 **Campos principales**:
 - recording_id: Relación con la grabación
@@ -104,13 +120,20 @@ Esta aplicación permite a los usuarios grabar reuniones en audio desde sus disp
    - Se vincula con la grabación correspondiente
    - El estado de la grabación cambia a "completed"
 
-4. **Notificación**:
-   - Se genera un email con la transcripción formateada usando plantillas Blade
+4. **Generación de Actas**:
+   - La transcripción se procesa con un servicio de IA especializado (OpenAI GPT-4o)
+   - Se utiliza un prompt especializado para extraer información relevante y estructurarla
+   - Se genera un acta formal en formato Markdown
+   - Se crea un registro en la tabla `records`
+   - Se vincula con la transcripción correspondiente
+
+5. **Notificación**:
+   - Se genera un email con el acta formateada usando plantillas Blade
    - Se envía al usuario mediante Resend API a través del sistema de emails de Laravel
    - El envío se procesa de forma asíncrona mediante colas
-   - Se registra el envío en la tabla `transcriptions` con fecha y hora
+   - Se registra el envío en la tabla `records` con fecha y hora
 
-5. **Gestión y Acceso**:
+6. **Gestión y Acceso**:
    - El usuario puede acceder a sus grabaciones y transcripciones
    - Puede buscar, filtrar y organizar su biblioteca
    - Opciones para editar transcripciones manualmente

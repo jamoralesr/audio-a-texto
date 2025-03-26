@@ -225,8 +225,8 @@ class RecordingResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Comentado hasta crear el RelationManager
-            // RelationManagers\TranscriptionRelationManager::class,
+            RelationManagers\TranscriptionRelationManager::class,
+            RelationManagers\RecordRelationManager::class,
         ];
     }
 

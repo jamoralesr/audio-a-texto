@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use App\Events\TranscriptionCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Transcription extends Model
+class Record extends Model
 {
     use HasFactory;
 
@@ -18,12 +16,11 @@ class Transcription extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'recording_id',
+        'transcription_id',
         'content',
         'language',
         'service_used',
         'service_response',
-        'confidence_score',
         'is_edited',
         'email_sent',
         'email_sent_at',
@@ -36,7 +33,6 @@ class Transcription extends Model
      */
     protected $casts = [
         'service_response' => 'array',
-        'confidence_score' => 'float',
         'is_edited' => 'boolean',
         'email_sent' => 'boolean',
         'email_sent_at' => 'datetime',
@@ -45,27 +41,10 @@ class Transcription extends Model
     ];
 
     /**
-     * Get the recording that owns the transcription.
+     * Get the transcription that owns the record.
      */
-    public function recording(): BelongsTo
+    public function transcription(): BelongsTo
     {
-        return $this->belongsTo(Recording::class);
+        return $this->belongsTo(Transcription::class);
     }
-
-    /**
-     * Get the record associated with the transcription.
-     */
-    public function record(): HasOne
-    {
-        return $this->hasOne(Record::class);
-    }
-    
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'created' => TranscriptionCreated::class,
-    ];
 }

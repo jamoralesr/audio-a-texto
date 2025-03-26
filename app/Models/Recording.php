@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Recording extends Model
 {
@@ -62,5 +63,13 @@ class Recording extends Model
     public function transcription(): HasOne
     {
         return $this->hasOne(Transcription::class);
+    }
+
+    /**
+     * Get the record associated with the recording through transcription.
+     */
+    public function record(): HasOneThrough
+    {
+        return $this->hasOneThrough(Record::class, Transcription::class);
     }
 }
